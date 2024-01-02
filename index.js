@@ -33,6 +33,13 @@ async function run() {
       res.send(result);
     })
 
+    // read the all data to the server 
+    app.get('/contacts', async (req, res) => {
+        const cursor = contactCollection.find();
+        const result = await cursor.toArray();
+        res.send(result);
+    })
+
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
     // Ensures that the client will close when you finish/error
