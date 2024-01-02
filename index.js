@@ -59,6 +59,23 @@ async function run() {
         res.send(result);
     })
 
+    app.put('/contacts/:id', async (req, res) => {
+        const id = req.params.id;
+        const filter = { _id: new ObjectId(id) }
+        const options = { upset: true };
+        const updateInfo = req.body;
+        const info = {
+          $set: {
+            name: updateInfo.name,
+            email: updateInfo.email,
+            phone: updateInfo.phone,
+            address: updateInfo.address,
+          }
+        }
+        const result = await contactCollection.updateOne(filter, info, options);
+        res.send(result);
+      })
+
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
     // Ensures that the client will close when you finish/error
