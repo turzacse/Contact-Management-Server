@@ -40,6 +40,18 @@ async function run() {
         res.send(result);
     })
 
+    app.get('/contacts/:id', async(req, res) => {
+        const id = req.params.id;
+        const query = {_id: new ObjectId(id)};
+
+        const options = {
+            projection: {name: 1, email:1, phone:1, address: 1, img:1 },
+          };
+
+        const result = await contactCollection.findOne(query);
+        res.send(result);
+    })
+
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
     // Ensures that the client will close when you finish/error
