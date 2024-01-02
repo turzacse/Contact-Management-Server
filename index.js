@@ -22,6 +22,17 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
 
+    const contactCollection = client.db('ContacttDB').collection('contacts');
+
+
+    // insert the data to the database 
+    app.post('/contacts', async (req, res) => {
+      const newContact = req.body;
+      console.log(newContact);
+      const result = await contactCollection.insertOne(newContact);
+      res.send(result);
+    })
+
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
     // Ensures that the client will close when you finish/error
