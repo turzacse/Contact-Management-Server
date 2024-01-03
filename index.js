@@ -60,21 +60,42 @@ async function run() {
     })
 
     app.put('/contacts/:id', async (req, res) => {
-        const id = req.params.id;
-        const filter = { _id: new ObjectId(id) }
-        const options = { upset: true };
-        const updateInfo = req.body;
-        const info = {
-          $set: {
-            name: updateInfo.name,
-            email: updateInfo.email,
-            phone: updateInfo.phone,
-            address: updateInfo.address,
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const updateInfo = req.body;
+  
+      try {
+          let updateQuery = {};
+  
+          // Case 1: Update the 'role' field only
+          if (updateInfo.role !== undefined) {
+              updateQuery = {
+                  $set: {
+                      role: updateInfo.role
+                  }
+              };
+          } else {
+              // Case 2: Update other fields while keeping 'role' unchanged
+              const { name, email, phone, address } = updateInfo;
+              updateQuery = {
+                  $set: {
+                      name: name,
+                      email: email,
+                      phone: phone,
+                      address: address
+                      // Add more fields to update here as needed
+                  }
+              };
           }
-        }
-        const result = await contactCollection.updateOne(filter, info, options);
-        res.send(result);
-      })
+  
+          const result = await contactCollection.updateOne(filter, updateQuery);
+          res.send(result);
+      } catch (error) {
+          res.status(500).send(error);
+      }
+  });
+  
+
 
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
